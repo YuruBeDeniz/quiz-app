@@ -28,8 +28,8 @@ export default function QuestionCard (props: QuestionCardProps) {
                         disabled={!!userAnswer}
                         value={answer}
                         onClick={callback}>
-                    </button>
                     <span dangerouslySetInnerHTML={{__html: answer}} />
+                    </button>
                 </ButtonWrapper>
             ))}
         </div>
