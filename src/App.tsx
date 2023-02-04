@@ -1,9 +1,10 @@
 import { MouseEvent, useState } from "react";
+import { GlobalStyle, Wrapper } from './App.styles';
 import QuestionCard from "./components/QuestionCard";
 import { fetchQuizQuestions } from "./API";
 import { QuestionsState, Difficulty } from "./API";
 
-type AnswerObject = {
+export type AnswerObject = {
   question: string;
   answer: string;
   correct: boolean;
@@ -43,21 +44,52 @@ function App() {
 
   //we will trigger this function when the user selects an answer
   //that's why the function will accept event as a parameter
-  const checkAnswer = (e: MouseEvent<HTMLButtonElement>) => {};
+  const checkAnswer = (e: MouseEvent<HTMLButtonElement>) => {
+    if(!gameOver){
+      //user's answer:
+      const answer = e.currentTarget.value;
+
+      //check answer against correct answer
+      const correct = questions[questionNumber].correct_answer === answer;
+
+      // add score if answer is correct
+      if (correct) setScore(prev => prev + 1);
+
+      //save the answer in the array of user answers:
+      const answerObject = {
+        question: questions[questionNumber].question,
+        answer: answer,
+        correct,
+        correctAnswer: questions[questionNumber].correct_answer,
+      }
+      console.log(answerObject)
+      setUserAnswers(prev => [...prev, answerObject])
+    }
+  };
   
   //this function will be triggered when the user clicks for the next question:
-  const nextQuestion = () => {}
+  const nextQuestion = () => {
+    //move on to the next question if not the last question
+    const nextQuestion = questionNumber + 1;
+    if(nextQuestion === TOTAL_QUESTIONS) {
+      setGaveOver(true);
+    } else {
+      setQuestionNumber(nextQuestion);
+    }
+  }
 
   return (
-    <div className="App">
-     <h1>Quiz</h1>
+    <>
+    <GlobalStyle />
+      <Wrapper>
+     <h1>QUIZ</h1>
 
      {gameOver || userAnswers.length === TOTAL_QUESTIONS ? 
       <button className="start" onClick={startTrivia}>Start</button>
       : null }
      
      {!gameOver ? 
-      <p className="score">Score:</p> 
+      <p className="score">Score: {score}</p> 
       : null }
 
      {loading && <p>Loading questions...</p> }
@@ -80,8 +112,8 @@ function App() {
         <button className="next" onClick={nextQuestion}>Next Question</button>
       : null
     }
-     
-    </div>
+    </Wrapper>
+    </>
   );
 }
 
