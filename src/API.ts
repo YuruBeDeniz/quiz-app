@@ -9,7 +9,7 @@ export type Question = {
     type: string;
 }; 
 
-export type QuestionState = Question & { answers: string[] };
+export type QuestionsState = Question & { answers: string[] };
 
 export enum Difficulty {
     EASY = "easy",
@@ -17,13 +17,13 @@ export enum Difficulty {
     HARD = "hard"
 };
 
-export const fetchQuizQuestions =async (amount: number, difficulty: Difficulty): Promise<QuestionState[]> => {
+export const fetchQuizQuestions = async (amount: number, difficulty: Difficulty): Promise<QuestionsState[]> => {
     const endpoint = `https://opentdb.com/api.php?amount=${amount}&difficulty=${difficulty}&type=multiple`;
     const data = await (await fetch(endpoint)).json();
-    console.log(data);
-    return data.results.map((question: Question) => (
-        {...question, answers: shuffleArray([...question.incorrect_answers, question.correct_answer]) }
-    ))
+    return data.results.map((question: Question) => ({
+      ...question,
+      answers: shuffleArray([...question.incorrect_answers, question.correct_answer])
+    }))
 };
 
 //as we want to be able to specify how many questions that we want to grab,
@@ -39,6 +39,6 @@ export const fetchQuizQuestions =async (amount: number, difficulty: Difficulty):
 //by looking at console.log(fetchQuizQuestions(TOTAL_QUESTIONS, Difficulty.EASY))
 //we can create the type of the question
 //here we have correct_answer and incorrect_answers as separate properties
-//we will modify them to be in the same array as we want to mao through this array 
+//we will modify them to be in the same array as we want to map through this array 
 //and create the answers in the UI; to do that:
 //export type QuestionState = Question & { answers: string[]}

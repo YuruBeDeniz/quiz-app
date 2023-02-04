@@ -17,7 +17,7 @@ export default function QuestionCard (props: QuestionCardProps) {
         <p dangerouslySetInnerHTML={{__html: question}} />
         <div>
             {answers.map(answer => (
-                <div>
+                <div key={answer}>
                     <button disabled={userAnswer} onClick={callback}></button>
                     <span dangerouslySetInnerHTML={{__html: answer}} />
                 </div>
